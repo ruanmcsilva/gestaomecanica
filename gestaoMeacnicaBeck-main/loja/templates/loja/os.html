@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Ordem de Serviço #{{ servico.id }}</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        font-size: 12px;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        border: 1px solid #ccc;
+        padding: 20px;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .details,
+      .parts-table,
+      .totals {
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .totals {
+        text-align: right;
+      }
+      .totals p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Ordem de Serviço</h1>
+        <p><strong>Número:</strong> #{{ servico.id }}</p>
+      </div>
+
+      <div class="details">
+        <p><strong>Cliente:</strong> {{ cliente.nome }}</p>
+        <p><strong>Telefone:</strong> {{ cliente.telefone|default:"N/A" }}</p>
+        <p>
+          <strong>Moto:</strong> {{ moto.marca }} {{ moto.modelo }} (Placa: {{
+          moto.placa }})
+        </p>
+        <p>
+          <strong>Data de Início:</strong> {{ servico.data_inicio|date:"d/m/Y
+          H:i" }}
+        </p>
+        <p><strong>Descrição do Serviço:</strong> {{ servico.descricao }}</p>
+        <p><strong>Status:</strong> {{ servico.get_status_display }}</p>
+      </div>
+
+      <div class="parts-table">
+        <h3>Peças Utilizadas</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Peça</th>
+              <th>Descrição</th>
+              <th>Quantidade</th>
+              <th>Valor Unitário</th>
+              <th>Valor Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in itens %}
+            <tr>
+              <td>{{ item.peca.nome }}</td>
+              <td>{{ item.peca.descricao|default:"N/A" }}</td>
+              <td>{{ item.quantidade_utilizada }}</td>
+              <td>R$ {{ item.valor_unitario_na_epoca|floatformat:2 }}</td>
+              <td>R$ {{ item.valor_total_item|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5">Nenhuma peça utilizada neste serviço.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="totals">
+        <p>
+          <strong>Valor da Mão de Obra:</strong> R$ {{
+          servico.valor_mao_de_obra|floatformat:2 }}
+        </p>
+        <p>
+          <strong>Total de Peças:</strong> R$ {{
+          servico.valor_total_pecas|floatformat:2 }}
+        </p>
+        <hr />
+        <p>
+          <strong>Total Geral do Serviço:</strong> R$ {{
+          servico.valor_total_servico|floatformat:2 }}
+        </p>
+      </div>
+
+      <div class="footer">
+        <p style="text-align: center">Obrigado por escolher nossa mecânica!</p>
+      </div>
+    </div>
+  </body>
+</html>
